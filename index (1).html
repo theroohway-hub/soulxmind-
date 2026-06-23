@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoulxMind — AI Automation for Financial Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0f1e;
+  --bg-deep: #060911;
+  --surface: #111827;
+  --surface2: #1a2333;
+  --line: rgba(255,255,255,0.07);
+  --gold: #f5a623;
+  --gold-soft: rgba(245,166,35,0.12);
+  --green: #10b981;
+  --green-soft: rgba(16,185,129,0.12);
+  --red: #ef4444;
+  --text: #f7f8fa;
+  --muted: #8b96ab;
+  --muted2: #5c6780;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--gold); color: var(--bg); }
+
+/* ===== Texture ===== */
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ===== Nav ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 48px;
+  backdrop-filter: blur(12px);
+  background: rgba(10,15,30,0.6);
+  border-bottom: 1px solid var(--line);
+  transition: padding 0.3s ease;
+}
+.nav-logo {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.nav-logo .x { color: var(--gold); font-style: italic; }
+.nav-links {
+  display: flex;
+  gap: 36px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.25s;
+  position: relative;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 11px 22px;
+  border-radius: 100px;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(245,166,35,0.35);
+}
+@media (max-width: 860px) {
+  .nav-links { display:none; }
+  nav { padding: 18px 24px; }
+}
+
+/* ===== Hero ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 140px 48px 80px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 900px 600px at 80% -10%, rgba(245,166,35,0.10), transparent 60%),
+    radial-gradient(ellipse 700px 500px at -10% 90%, rgba(16,185,129,0.06), transparent 60%);
+}
+.hero-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 60px;
+  align-items: center;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-soft);
+  border: 1px solid rgba(245,166,35,0.25);
+  padding: 7px 16px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: rise 0.8s ease 0.1s forwards;
+}
+.eyebrow .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 0 0 rgba(16,185,129,0.6);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: clamp(2.6rem, 5.6vw, 4.6rem);
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  opacity: 0;
+  animation: rise 0.8s ease 0.25s forwards;
+}
+.hero h1 .accent {
+  font-style: italic;
+  font-weight: 500;
+  background: linear-gradient(100deg, var(--gold), #ffd27a 60%, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero p.lead {
+  margin-top: 26px;
+  font-size: 1.1rem;
+  color: var(--muted);
+  max-width: 480px;
+  font-weight: 300;
+  opacity: 0;
+  animation: rise 0.8s ease 0.4s forwards;
+}
+.hero-cta-row {
+  margin-top: 38px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: rise 0.8s ease 0.55s forwards;
+}
+.btn-primary {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 16px 30px;
+  border-radius: 100px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: none;
+  cursor: pointer;
+  font-family: 'Sora', sans-serif;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(245,166,35,0.35);
+}
+.btn-ghost {
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--text);
+  border: 1px solid var(--line);
+  padding: 16px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: border-color 0.25s, background 0.25s;
+}
+.btn-ghost:hover {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.03);
+}
+
+/* Social proof strip under hero CTA */
+.proof-strip {
+  margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  animation: rise 0.8s ease 0.65s forwards;
+}
+.proof-strip .avatars {
+  display: flex;
+}
+.proof-strip .avatars span {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--gold);
+  margin-left: -10px;
+}
+.proof-strip .avatars span:first-child { margin-left: 0; }
+.proof-strip p {
+  font-size: 0.84rem;
+  color: var(--muted);
+  font-weight: 300;
+}
+.proof-strip p b { color: var(--text); font-weight: 600; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== Signature element: live lead ticker ===== */
+.ticker-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 28px;
+  opacity: 0;
+  animation: rise 0.9s ease 0.5s forwards;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+}
+.ticker-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+.ticker-head .live {
+  display: flex; align-items: center; gap: 6px;
+  color: var(--green);
+}
+.ticker-head .live .d {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--green);
+  animation: pulse 2s infinite;
+}
+.stage-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  position: relative;
+}
+.stage-row::before {
+  content:'';
+  position: absolute;
+  top: 11px; left: 5%; right: 5%;
+  height: 1px;
+  background: var(--line);
+}
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.68rem;
+  color: var(--muted2);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  position: relative;
+  z-index: 1;
+}
+.stage .node {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.4s ease;
+}
+.stage.active .node {
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 6px rgba(245,166,35,0.12);
+}
+.stage.active { color: var(--gold); }
+.stage.done .node {
+  background: var(--green);
+  border-color: var(--green);
+}
+.stage.done { color: var(--green); }
+
+.lead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  transition: background 0.4s, border-color 0.4s;
+}
+.lead-row .name { font-weight: 600; }
+.lead-row .meta { color: var(--muted2); font-size: 0.78rem; }
+.lead-row .badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 4px 10px;
+  border-radius: 100px;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.badge.score-pending { background: rgba(255,255,255,0.05); color: var(--muted2); }
+.badge.score-hot { background: rgba(239,68,68,0.15); color: var(--red); }
+.badge.score-warm { background: var(--gold-soft); color: var(--gold); }
+
+.lead-row.fresh { animation: flashIn 0.6s ease; border-color: rgba(245,166,35,0.3); }
+@keyframes flashIn {
+  0% { background: rgba(245,166,35,0.12); transform: translateX(-6px); opacity:0; }
+  100% { background: transparent; transform: translateX(0); opacity:1; }
+}
+
+.ticker-foot {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+.ticker-foot b { color: var(--text); font-size: 1rem; }
+
+@media (max-width: 980px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero { padding: 120px 24px 60px; }
+}
+
+/* ===== Marquee divider ===== */
+.marquee-wrap {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  overflow: hidden;
+  padding: 18px 0;
+}
+.marquee {
+  display: flex;
+  gap: 60px;
+  white-space: nowrap;
+  animation: scroll 32s linear infinite;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted2);
+}
+.marquee span { display: flex; align-items: center; gap: 60px; }
+.marquee b { color: var(--gold); font-weight: 600; }
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ===== Sections ===== */
+section { padding: 110px 48px; }
+.section-inner { max-width: 1280px; margin: 0 auto; }
+.section-head {
+  max-width: 640px;
+  margin-bottom: 64px;
+}
+.section-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 18px;
+  display: block;
+}
+.section-head h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+.section-head p {
+  margin-top: 18px;
+  color: var(--muted);
+  font-size: 1.02rem;
+  font-weight: 300;
+}
+
+/* ===== Problem / Pain section ===== */
+.pain-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.pain-card {
+  background: var(--bg);
+  padding: 40px 34px;
+  transition: background 0.3s;
+}
+.pain-card:hover { background: var(--surface); }
+.pain-stat {
+  font-family: 'Fraunces', serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 14px;
+  line-height: 1;
+}
+.pain-card h3 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.pain-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 300;
+}
+@media (max-width: 860px) {
+  .pain-grid { grid-template-columns: 1fr; }
+  section { padding: 70px 24px; }
+}
+
+/* ===== Lead Leak Calculator (THE TRAP) ===== */
+.calc-section {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+.calc-section::before {
+  content: '';
+  position: absolute;
+  top: -20%; right: -10%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(245,166,35,0.08), transparent 65%);
+  pointer-events: none;
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+.calc-copy h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  margin-bottom: 18px;
+}
+.calc-copy h2 .accent {
+  font-style: italic;
+  color: var(--gold);
+}
+.calc-copy p {
+  color: var(--muted);
+  font-size: 1.02rem;
+  font-weight: 300;
+  margin-bottom: 28px;
+}
+.calc-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.calc-bullets div {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+.calc-bullets div .ico {
+  color: var(--green);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.calc-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 36px;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,0.6);
+}
+.calc-card .calc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+  display: block;
+}
+.calc-card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.calc-field { margin-bottom: 20px; }
+.calc-field label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.calc-field input, .calc-field select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.calc-field input:focus, .calc-field select:focus { border-color: var(--gold); }
+.calc-field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%238b96ab' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  cursor: pointer;
+}
+.calc-btn {
+  width: 100%;
+  font-weight: 600;
+  font-size: 0.94rem;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.25s, box-shadow 0.25s;
+  font-family: 'Sora', sans-serif;
+}
+.calc-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(245,166,35,0.35);
+}
+
+/* Result reveal */
+.calc-result {
+  margin-top: 24px;
+  padding: 24px;
+  border-radius: 14px;
+  background: var(--gold-soft);
+  border: 1px solid rgba(245,166,35,0.25);
+  text-align: center;
+  display: none;
+}
+.calc-result.show { display: block; animation: rise 0.6s ease forwards; }
+.calc-result .label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.calc-result .number {
+  font-family: 'Fraunces', serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--gold);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.calc-result .sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.calc-result .email-capture {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+.calc-result .email-capture input {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+}
+.calc-result .email-capture input:focus { border-color: var(--gold); }
+.calc-result .email-capture button {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--bg);
+  background: var(--gold);
+  padding: 13px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s;
+}
+.calc-result .email-capture button:hover { transform: translateY(-1px); }
+.calc-result .privacy {
+  margin-top: 12px;
+  font-size: 0.74rem;
+  color: var(--muted2);
+}
+.calc-result .sent-msg {
+  display: none;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--green-soft);
+  border: 1px solid rgba(16,185,129,0.25);
+  color: var(--green);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.calc-result .sent-msg.show { display: block; }
+
+@media (max-width: 980px) {
+  .calc-grid { grid-template-columns: 1fr; gap: 40px; }
+  .calc-result .email-capture { flex-direction: column; }
+}
+
+/* ===== Services ===== */
+.services-list {
+  display: flex;
+  flex-direction: column;
+}
+.service-row {
+  display: grid;
+  grid-template-columns: 90px 1.4fr 1.6fr;
+  gap: 40px;
+  align-items: start;
+  padding: 42px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 0.4s ease;
+}
+.service-row:first-child { border-top: 1px solid var(--line); }
+.service-row:hover { padding-left: 14px; }
+.service-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--muted2);
+  padding-top: 6px;
+}
+.service-row h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+}
+.service-row h3 .for {
+  display: block;
+  font-family: 'Sora', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.service-detail p {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 300;
+  margin-bottom: 18px;
+}
+.service-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.service-tags span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 6px 12px;
+  border-radius: 100px;
+}
+@media (max-width: 860px) {
+  .service-row { grid-template-columns: 1fr; gap: 16px; }
+  .service-num { display: none; }
+}
+
+/* ===== Process ===== */
+.process-wrap { position: relative; }
+.process-line {
+  position: absolute;
+  left: 19px; top: 14px; bottom: 14px;
+  width: 1px;
+  background: var(--line);
+}
+.process-step {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 28px;
+  padding-bottom: 56px;
+  position: relative;
+}
+.process-step:last-child { padding-bottom: 0; }
+.process-dot {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--gold);
+  z-index: 1;
+  flex-shrink: 0;
+}
+.process-step h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.process-step p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 300;
+  max-width: 520px;
+}
+.process-step .time {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+
+/* ===== Markets ===== */
+.markets-band {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.markets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+.market-cell {
+  background: var(--surface);
+  padding: 36px 30px;
+  transition: background 0.3s;
+}
+.market-cell:hover { background: var(--surface2); }
+.market-cell .flag-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 10px;
+}
+.market-cell h4 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+}
+@media (max-width: 860px) {
+  .markets-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== Pricing ===== */
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.price-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 38px 32px;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.price-card.featured {
+  border-color: rgba(245,166,35,0.4);
+  background: linear-gradient(180deg, rgba(245,166,35,0.06), transparent 60%);
+  transform: scale(1.02);
+}
+.price-card:hover { border-color: rgba(255,255,255,0.18); }
+.price-card .tier-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  margin-bottom: 18px;
+}
+.price-card.featured .tier-tag { color: var(--gold); }
+.price-card h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.price-card .price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 18px 0 6px;
+}
+.price-card .price small {
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+.price-card .retainer {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 26px;
+}
+.price-card ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
+  flex-grow: 1;
+}
+.price-card li {
+  font-size: 0.88rem;
+  color: var(--muted);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.price-card li::before {
+  content: '—';
+  color: var(--gold);
+  flex-shrink: 0;
+}
+@media (max-width: 980px) {
+  .pricing-grid { grid-template-columns: 1fr; }
+  .price-card.featured { transform: none; }
+}
+
+/* ===== CTA / Contact ===== */
+.cta-section {
+  text-align: center;
+  padding: 130px 48px;
+  position: relative;
+  background:
+    radial-gradient(ellipse 800px 500px at 50% 100%, rgba(245,166,35,0.10), transparent 60%);
+}
+.cta-section h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 5vw, 3.8rem);
+  max-width: 760px;
+  margin: 0 auto 24px;
+  line-height: 1.15;
+}
+.cta-section h2 .accent {
+  font-style: italic;
+  color: var(--gold);
+}
+.cta-section p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  font-weight: 300;
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ===== Footer ===== */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 50px 48px;
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.footer-logo {
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.footer-logo .x { color: var(--gold); font-style: italic; }
+.footer-links {
+  display: flex;
+  gap: 28px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.footer-links a { color: var(--muted); text-decoration: none; transition: color 0.25s; }
+.footer-links a:hover { color: var(--text); }
+.footer-copy {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted2);
+}
+@media (max-width: 860px) {
+  section { padding: 70px 24px; }
+  .cta-section { padding: 80px 24px; }
+  footer { padding: 40px 24px; }
+}
+
+/* ===== Reveal on scroll ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+  <div class="nav-logo">Soul<span class="x">x</span>Mind</div>
+  <div class="nav-links">
+    <a href="#calculator">Lead Leak Calculator</a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#pricing">Pricing</a>
+  </div>
+  <a href="https://calendly.com/thesoulxmind/30min" target="_blank" class="nav-cta">Book a call</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow"><span class="dot"></span> AI Automation · Financial Services Worldwide</div>
+      <h1>The lead that<br>almost <span class="accent">got away</span> — caught.</h1>
+      <p class="lead">We build AI systems that qualify, score and route every website visitor for mortgage brokers, claims firms and debt advisors — across the UK, UAE, Australia and USA, while you sleep.</p>
+      <div class="hero-cta-row">
+        <a href="#calculator" class="btn-primary">See what you're losing →</a>
+        <a href="#services" class="btn-ghost">What we build</a>
+      </div>
+      <div class="proof-strip">
+        <div class="avatars">
+          <span>UK</span><span>AE</span><span>AU</span>
+        </div>
+        <p><b>Currently onboarding</b> early partners across mortgage &amp; claims firms worldwide</p>
+      </div>
+    </div>
+
+    <!-- Signature: live lead ticker -->
+    <div class="ticker-card">
+      <div class="ticker-head">
+        <span>mortgageai · pre-qualification</span>
+        <span class="live"><span class="d"></span> live</span>
+      </div>
+      <div class="stage-row" id="stageRow">
+        <div class="stage" data-stage="0"><div class="node">①</div>Visitor</div>
+        <div class="stage" data-stage="1"><div class="node">②</div>Chat</div>
+        <div class="stage" data-stage="2"><div class="node">③</div>Score</div>
+        <div class="stage" data-stage="3"><div class="node">④</div>Routed</div>
+      </div>
+      <div id="leadList"></div>
+      <div class="ticker-foot">
+        <span>response time <b>4s</b></span>
+        <span>capture rate <b>87%</b></span>
+        <span>always on <b>24/7</b></span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Marquee ===== -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>
+      <b>Mortgage Brokers</b> · Claims Firms · Debt Advisors · Insurance Brokers · <b>UK</b> · UAE · Australia · USA · <b>Mortgage Brokers</b> · Claims Firms · Debt Advisors · Insurance Brokers · <b>UK</b> · UAE · Australia · USA ·
+    </span>
+    <span>
+      <b>Mortgage Brokers</b> · Claims Firms · Debt Advisors · Insurance Brokers · <b>UK</b> · UAE · Australia · USA · <b>Mortgage Brokers</b> · Claims Firms · Debt Advisors · Insurance Brokers · <b>UK</b> · UAE · Australia · USA ·
+    </span>
+  </div>
+</div>
+
+<!-- ===== PAIN ===== -->
+<section class="reveal">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-tag">The Problem</span>
+      <h2>Your website works hard.<br>Your follow-up doesn't.</h2>
+      <p>Most financial firms — wherever they're based — lose the majority of their site traffic before a single conversation happens, and nobody finds out until it's too late.</p>
+    </div>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <div class="pain-stat">80%</div>
+        <h3>Visitors leave silently</h3>
+        <p>Most people who land on a financial firm's site never fill in a form, call, or leave any trace — they just disappear.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-stat">After hours</div>
+        <h3>Nobody's watching</h3>
+        <p>Evenings and weekends bring real intent — but no team to capture it, qualify it, or respond in time.</p>
+      </div>
+      <div class="pain-card">
+        <div class="pain-stat">Unsorted</div>
+        <h3>Hot leads get lost</h3>
+        <p>Without scoring, a ready-to-buy lead sits in the same inbox as a casual browser — until it's cold.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEAD LEAK CALCULATOR (THE TRAP) ===== -->
+<section id="calculator" class="calc-section reveal">
+  <div class="section-inner">
+    <div class="calc-grid">
+      <div class="calc-copy">
+        <span class="section-tag">60-Second Diagnostic</span>
+        <h2>How much revenue is your site <span class="accent">leaking</span> right now?</h2>
+        <p>Every visitor who leaves without being captured is a lead your competitors might close instead. This calculator shows you the real monthly cost — based on your own traffic numbers.</p>
+        <div class="calc-bullets">
+          <div><span class="ico">✓</span> Uses your actual monthly visitor count</div>
+          <div><span class="ico">✓</span> Shows estimated lost leads &amp; their value</div>
+          <div><span class="ico">✓</span> No signup needed to see your number</div>
+          <div><span class="ico">✓</span> Takes less time than your next coffee break</div>
+        </div>
+      </div>
+
+      <div class="calc-card">
+        <span class="calc-tag">Lead Leak Calculator</span>
+        <h3>Find your number</h3>
+
+        <div class="calc-field">
+          <label>Monthly website visitors</label>
+          <input type="number" id="calcVisitors" placeholder="e.g. 1200" min="0">
+        </div>
+
+        <div class="calc-field">
+          <label>Average deal value to your firm</label>
+          <select id="calcDealValue">
+            <option value="500">Under $1,000 ($500 avg)</option>
+            <option value="1500" selected>$1,000 – $2,000 ($1,500 avg)</option>
+            <option value="3000">$2,000 – $4,000 ($3,000 avg)</option>
+            <option value="6000">Over $4,000 ($6,000 avg)</option>
+          </select>
+        </div>
+
+        <div class="calc-field">
+          <label>Your current enquiry-to-client conversion rate</label>
+          <select id="calcConvRate">
+            <option value="0.05">Around 5%</option>
+            <option value="0.10" selected>Around 10%</option>
+            <option value="0.15">Around 15%</option>
+            <option value="0.20">Around 20%+</option>
+          </select>
+        </div>
+
+        <button class="calc-btn" onclick="calculateLeak()">Calculate my lost revenue →</button>
+
+        <div class="calc-result" id="calcResult">
+          <div class="label">Estimated monthly revenue lost</div>
+          <div class="number" id="calcNumber">$0</div>
+          <div class="sub" id="calcSub">based on industry-average capture rates for unattended sites</div>
+
+          <div class="email-capture">
+            <input type="email" id="calcEmail" placeholder="Enter email for the full breakdown">
+            <button onclick="sendBreakdown()">Send it to me</button>
+          </div>
+          <div class="privacy">We'll send a 1-page breakdown + a short note on how to recover this — no spam, ever.</div>
+          <div class="sent-msg" id="calcSentMsg">✅ Sent! Check your inbox for the full breakdown — and feel free to book a call below to walk through it together.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section id="services" class="reveal">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-tag">What We Build</span>
+      <h2>Purpose-built systems, not generic chatbots.</h2>
+      <p>Every system is designed around one financial niche — its language, its qualifying questions, and the decision it needs to make.</p>
+    </div>
+    <div class="services-list">
+      <div class="service-row">
+        <div class="service-num">01</div>
+        <h3><span class="for">For mortgage brokers</span>Pre-Qualification AI</h3>
+        <div class="service-detail">
+          <p>Visitors are walked through income, deposit and credit questions by an AI assistant, scored 0–100, and dropped straight into a live lead dashboard — sorted Hot, Warm or Cold.</p>
+          <div class="service-tags">
+            <span>Lead scoring</span>
+            <span>Live dashboard</span>
+            <span>CRM webhook</span>
+          </div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-num">02</div>
+        <h3><span class="for">For claims &amp; compensation firms</span>Eligibility Checker</h3>
+        <div class="service-detail">
+          <p>An AI screener asks the right qualifying questions up front, filters out time-wasters, and only passes through cases worth a callback — with a confidence score attached.</p>
+          <div class="service-tags">
+            <span>Eligibility scoring</span>
+            <span>Callback queue</span>
+            <span>Case summary</span>
+          </div>
+        </div>
+      </div>
+      <div class="service-row">
+        <div class="service-num">03</div>
+        <h3><span class="for">For debt advisory firms</span>Consolidation Calculator</h3>
+        <div class="service-detail">
+          <p>Visitors see a real, instant estimate of their potential monthly savings — turning a cold enquiry into a warm conversation before your team even picks up the phone.</p>
+          <div class="service-tags">
+            <span>Savings estimator</span>
+            <span>Warm handoff</span>
+            <span>Lead capture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROCESS ===== -->
+<section id="process" class="reveal">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-tag">How It Works</span>
+      <h2>From first message to live on your site.</h2>
+    </div>
+    <div class="process-wrap">
+      <div class="process-line"></div>
+      <div class="process-step">
+        <div class="process-dot">01</div>
+        <div>
+          <h3>We map your funnel</h3>
+          <p>A short call to understand what a qualified lead looks like for your business — the questions, the thresholds, the handoff.</p>
+          <span class="time">Day 1</span>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-dot">02</div>
+        <div>
+          <h3>We build the system</h3>
+          <p>Your AI assistant, scoring logic and dashboard are built around your branding and connected to your existing tools.</p>
+          <span class="time">Day 2–3</span>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-dot">03</div>
+        <div>
+          <h3>You go live</h3>
+          <p>The system is deployed on your site — capturing, scoring and routing leads from day one, with full visibility into every conversation.</p>
+          <span class="time">Day 4</span>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-dot">04</div>
+        <div>
+          <h3>We keep it sharp</h3>
+          <p>Ongoing monthly support — refining questions, adjusting scoring, and reporting on what's converting.</p>
+          <span class="time">Ongoing</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MARKETS ===== -->
+<section id="markets" class="markets-band reveal">
+  <div class="section-inner" style="padding: 70px 0;">
+    <div class="section-head" style="margin-bottom: 48px;">
+      <span class="section-tag">Where We Work</span>
+      <h2>Built for firms operating in these countries.</h2>
+    </div>
+  </div>
+  <div class="markets-grid">
+    <div class="market-cell">
+      <h4>United Kingdom</h4>
+    </div>
+    <div class="market-cell">
+      <h4>United States</h4>
+    </div>
+    <div class="market-cell">
+      <h4>UAE</h4>
+    </div>
+    <div class="market-cell">
+      <h4>Australia</h4>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRICING ===== -->
+<section id="pricing" class="reveal">
+  <div class="section-inner">
+    <div class="section-head">
+      <span class="section-tag">Investment</span>
+      <h2>One build. Ongoing support.</h2>
+      <p>Every package includes setup, deployment and a monthly plan that covers hosting, AI usage and continuous refinement. Pricing shown in USD — exact pricing varies slightly by region, contact us for a quote in your local currency.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="tier-tag">Starter</div>
+        <h3>Single System</h3>
+        <div class="price">$1,999</div>
+        <div class="retainer">+ $499/month support &amp; hosting</div>
+        <ul>
+          <li>One AI qualification system</li>
+          <li>Custom branding &amp; questions</li>
+          <li>Live lead dashboard</li>
+          <li>CRM / webhook integration</li>
+          <li>48-hour deployment</li>
+        </ul>
+        <a href="https://calendly.com/thesoulxmind/30min" target="_blank" class="btn-ghost" style="text-align:center;">Book a call</a>
+      </div>
+      <div class="price-card featured">
+        <div class="tier-tag">Most chosen</div>
+        <h3>Growth</h3>
+        <div class="price">$3,249</div>
+        <div class="retainer">+ $749/month support &amp; hosting</div>
+        <ul>
+          <li>Everything in Starter</li>
+          <li>Lead scoring refinement</li>
+          <li>Monthly performance report</li>
+          <li>Priority response support</li>
+          <li>One revision cycle per month</li>
+        </ul>
+        <a href="https://calendly.com/thesoulxmind/30min" target="_blank" class="btn-primary" style="justify-content:center;">Book a call</a>
+      </div>
+      <div class="price-card">
+        <div class="tier-tag">Enterprise</div>
+        <h3>Multi-System</h3>
+        <div class="price">Custom</div>
+        <div class="retainer">For firms with multiple offices or service lines</div>
+        <ul>
+          <li>Multiple qualification systems</li>
+          <li>Cross-system reporting</li>
+          <li>Dedicated support channel</li>
+          <li>Custom integrations</li>
+        </ul>
+        <a href="https://calendly.com/thesoulxmind/30min" target="_blank" class="btn-ghost" style="text-align:center;">Talk to us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section reveal" id="contact">
+  <span class="section-tag">Get Started</span>
+  <h2>Stop losing leads<br>to <span class="accent">silence</span>.</h2>
+  <p>Send us your website and we'll show you exactly what a qualification system would look like for your business — live, in minutes.</p>
+  <div class="cta-buttons">
+    <a href="https://calendly.com/thesoulxmind/30min" target="_blank" class="btn-primary">Book a call →</a>
+    <a href="mailto:thesoulxmind@gmail.com" class="btn-ghost">Email us</a>
+    <a href="https://theroohway-hub.github.io/mortgageai" target="_blank" class="btn-ghost">View live demo</a>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Soul<span class="x">x</span>Mind</div>
+    <div class="footer-links">
+      <a href="#calculator">Lead Leak Calculator</a>
+      <a href="#services">Services</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://calendly.com/thesoulxmind/30min" target="_blank">Book a call</a>
+      <a href="mailto:thesoulxmind@gmail.com">Contact</a>
+    </div>
+    <div class="footer-copy">AI AUTOMATION AGENCY — FINANCIAL SERVICES</div>
+  </div>
+</footer>
+
+<script>
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
+}, { threshold: 0.15 });
+reveals.forEach(r => obs.observe(r));
+
+// Signature ticker animation
+const stages = document.querySelectorAll('.stage');
+const leadList = document.getElementById('leadList');
+
+const leads = [
+  { name: 'S. Whitfield', meta: '$420k · 15% deposit', score: '87/100', cls: 'score-hot' },
+  { name: 'R. Okonjo', meta: '$260k · 8% deposit', score: '54/100', cls: 'score-warm' },
+  { name: 'M. Patel', meta: '$610k · 22% deposit', score: '91/100', cls: 'score-hot' },
+  { name: 'J. Calder', meta: '$195k · 12% deposit', score: '63/100', cls: 'score-warm' },
+];
+
+let cycle = 0;
+let stageIdx = 0;
+
+function renderLeads(highlightLast) {
+  leadList.innerHTML = '';
+  const visible = leads.slice(0, (cycle % leads.length) + 1);
+  visible.forEach((l, i) => {
+    const row = document.createElement('div');
+    row.className = 'lead-row' + (highlightLast && i === visible.length - 1 ? ' fresh' : '');
+    const showScore = stageIdx >= 2 || i < visible.length - 1;
+    row.innerHTML = `
+      <div>
+        <div class="name">${l.name}</div>
+        <div class="meta">${l.meta}</div>
+      </div>
+      <div class="badge ${showScore ? l.cls : 'score-pending'}">${showScore ? l.score : '—'}</div>
+    `;
+    leadList.appendChild(row);
+  });
+}
+
+function tick() {
+  stages.forEach(s => s.classList.remove('active'));
+  for (let i = 0; i < stageIdx; i++) stages[i].classList.add('done');
+  stages[stageIdx].classList.add('active');
+
+  renderLeads(stageIdx === stages.length - 1);
+
+  stageIdx++;
+  if (stageIdx >= stages.length) {
+    stageIdx = 0;
+    stages.forEach(s => s.classList.remove('done', 'active'));
+    cycle++;
+    if (cycle >= leads.length) cycle = 0;
+  }
+}
+
+tick();
+setInterval(tick, 1400);
+
+// ===== LEAD LEAK CALCULATOR LOGIC =====
+const CALC_WEBHOOK_URL = 'https://hook.eu1.make.com/xk873rjo2bnoj7ho5dcfwc5ohsa3s99w';
+
+function calculateLeak() {
+  const visitors = parseFloat(document.getElementById('calcVisitors').value) || 0;
+  const dealValue = parseFloat(document.getElementById('calcDealValue').value);
+  const convRate = parseFloat(document.getElementById('calcConvRate').value);
+
+  if (visitors <= 0) {
+    document.getElementById('calcVisitors').focus();
+    document.getElementById('calcVisitors').style.borderColor = '#ef4444';
+    setTimeout(() => { document.getElementById('calcVisitors').style.borderColor = ''; }, 1500);
+    return;
+  }
+
+  // Assumption: ~80% of visitors leave with zero capture (industry pain point stat used on page)
+  // Of the 80% that would otherwise be lost, an AI system recovers an estimated 50% as captured/qualified leads
+  const uncapturedVisitors = visitors * 0.80;
+  const recoverableLeads = uncapturedVisitors * 0.50;
+  const recoverableClients = recoverableLeads * convRate;
+  const monthlyLoss = recoverableClients * dealValue;
+
+  const formatted = '$' + Math.round(monthlyLoss).toLocaleString('en-US');
+
+  document.getElementById('calcNumber').textContent = formatted;
+  document.getElementById('calcSub').textContent =
+    `≈ ${Math.round(recoverableClients)} extra client${recoverableClients >= 1.5 ? 's' : ''}/month if those visitors were captured & qualified`;
+  document.getElementById('calcResult').classList.add('show');
+  document.getElementById('calcSentMsg').classList.remove('show');
+}
+
+function sendBreakdown() {
+  const email = document.getElementById('calcEmail').value.trim();
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    document.getElementById('calcEmail').style.borderColor = '#ef4444';
+    document.getElementById('calcEmail').focus();
+    setTimeout(() => { document.getElementById('calcEmail').style.borderColor = ''; }, 1500);
+    return;
+  }
+
+  const payload = {
+    system: 'LeadLeakCalculator-TheSoulxMind',
+    email: email,
+    visitors: document.getElementById('calcVisitors').value,
+    dealValue: document.getElementById('calcDealValue').value,
+    convRate: document.getElementById('calcConvRate').value,
+    estimatedMonthlyLoss: document.getElementById('calcNumber').textContent,
+    timestamp: new Date().toISOString()
+  };
+
+  fetch(CALC_WEBHOOK_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(() => {});
+
+  document.getElementById('calcSentMsg').classList.add('show');
+  document.getElementById('calcEmail').value = '';
+}
+</script>
+
+</body>
+</html>
